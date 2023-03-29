@@ -10,7 +10,8 @@
              (declare (ignore params))
              (setf (lack.response:response-headers ningle:*response*)
                    (append (lack.response:response-headers ningle:*response*)
-                           (list :content-type "application/json")))
+                           (list :content-type "application/json")
+                           (list :access-control-allow-origin "*")))
              ,@body)))
 
 (defun start ()
@@ -25,13 +26,18 @@
 
 (setf (ningle:route *app* "/") "Fine")
 
-(defroute "/items"
-  (jonathan:to-json '((:name "heh" :description "meh" :cost 4000)
-                      (:name "kek" :description "wpek" :cost 2000)
-                      (:name "another" :description "123" :cost 6000))))
+(defroute "/api/items"
+  (jonathan:to-json '((:|id| 0 :|name| "heh" :|description| "meh" :|cost| 4100)
+                      (:|id| 1 :|name| "kek" :|description| "wpek" :|cost| 2020)
+                      (:|id| 2 :|name| "another" :|description| "123" :|cost| 6000)
+                      (:|id| 3 :|name| "vamp" :|description| "hello" :|cost| 1500)
+                      (:|id| 4 :|name| "sudo" :|description| "ls cd ls" :|cost| 3400))))
 
-(defroute "/comments"
-  (jonathan:to-json '((:name "first" :body "lol")
-                      (:name "second" :body "kek")
-                      (:name "third" :body "nice"))))
+(defroute "/api/item/*"
+  (jonathan:to-json '(:|id| 0 :|name| "heh" :|description| "meh" :|cost| 4100)))
+
+(defroute "/api/comments"
+  (jonathan:to-json '((:|name| "first" :|body| "lol")
+                      (:|name| "second" :|body| "kek")
+                      (:|name| "third" :|body| "nice"))))
 
