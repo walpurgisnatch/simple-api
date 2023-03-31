@@ -4,6 +4,12 @@
 
 (defvar *server* nil)
 
+(defvar *items* '((:|id| 0 :|name| "heh" :|description| "meh" :|cost| 4100)
+                  (:|id| 1 :|name| "kek" :|description| "wpek" :|cost| 2020)
+                  (:|id| 2 :|name| "another" :|description| "123" :|cost| 6000)
+                  (:|id| 3 :|name| "vamp" :|description| "hello" :|cost| 1500)
+                  (:|id| 4 :|name| "sudo" :|description| "ls cd ls" :|cost| 3400)))
+
 (defmacro defroute (path &body body)
   `(setf (ningle:route *app* ,path)
          #'(lambda (params)
@@ -27,14 +33,10 @@
 (setf (ningle:route *app* "/") "Fine")
 
 (defroute "/api/items"
-  (jonathan:to-json '((:|id| 0 :|name| "heh" :|description| "meh" :|cost| 4100)
-                      (:|id| 1 :|name| "kek" :|description| "wpek" :|cost| 2020)
-                      (:|id| 2 :|name| "another" :|description| "123" :|cost| 6000)
-                      (:|id| 3 :|name| "vamp" :|description| "hello" :|cost| 1500)
-                      (:|id| 4 :|name| "sudo" :|description| "ls cd ls" :|cost| 3400))))
+  (jonathan:to-json *items*))
 
-(defroute "/api/item/*"
-  (jonathan:to-json '(:|id| 0 :|name| "heh" :|description| "meh" :|cost| 4100)))
+(defroute "/api/item/:id"
+  (jonathan:to-json (elt *items* (parse-integer (cdr (assoc :id params))))))
 
 (defroute "/api/comments"
   (jonathan:to-json '((:|name| "first" :|body| "lol")
